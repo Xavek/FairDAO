@@ -1,47 +1,6 @@
 // ethers is added through hardhat.config.js
 /*
-IN SHORT: (see https://www.youtube.com/watch?v=AhJtmUqhAqg)
-1. GovernanceToken : who owns how many votes
-2. timelock : is the owner, says who can propose (GovernorContract) for changes in Box, 
-   and when can these changes (on Box) actually be executed
-3. GovernorContract: voting logic (e.g. count votes based of GovernanceToken allocation, check if vote passed)
-4. Box : is the contract whose owner is the timelock (you need to vote to change state values)
 
- DEPLOYMENT STEPS:
- 1. Deploy governance token (ERC20Votes):
- INPUTS: none
-    a. no owner, fixed supply
-    b. This extension (ERC20Votes) keeps a history (checkpoints) of each account's vote power. Vote power can be delegated either
-       by calling the {delegate} function directly, or by providing a signature to be used with {delegateBySig}. Voting
-       power can be queried through the public accessors {getVotes} and {getPastVotes}.
-    c. By default, token balance does not account for voting power. This makes transfers cheaper. The downside is that it
-       requires users to delegate to themselves in order to activate checkpoints and have their voting power tracked.
- 2. Deploy timelock contract (is the owner of everything)
- - INPUTS: just set a MIN_DELAY, and provide empty lists of proposers, and executors (will populate later)
- - the proposer will become the governor contract
- - the executor can be anyone
-    a. Contract module which acts as a timelocked controller. When set as the
-  owner of an `Ownable` smart contract, it enforces a timelock on all
-  `onlyOwner` maintenance operations. This gives time for users of the
-  controlled contract to exit before a potentially dangerous maintenance
-  operation is applied.
-  b. By default, this contract is self administered, meaning administration tasks
-  have to go through the timelock process. The proposer (resp executor) role
-  is in charge of proposing (resp executing) operations. A common use case is
-  to position this {TimelockController} as the owner of a smart contract, with
-  a multisig or a DAO as the sole proposer.
-3. Deploy GovernorContract - for a quick setup go to openzeppelin contract wizard
-INPUTS: governanceTokenContract.address, timeLockContract.address, VOTING_DELAY, 
-        VOTING_PERIOD, QUORUM_PERCENTAGE
-  a. This contract has all the voting logic 
-      e.g. - A counting module must implement {quorum}, {_quorumReached}, {_voteSucceeded} and {_countVote}
-           - A voting module must implement {_getVotes}
-           - Additionanly, the {votingPeriod} must also be implemented
-4. SETUP timeLockContract
- a. set governorContract for proposerRole
- b. set 0x00 for executorRole
- c. revoke adminRole of deployer's address for timeLockContract
-5. Deploy Box (which is Ownable), and set timelock as owner
 */
 // parameters
 let MIN_DELAY = 3600// in seconds
